@@ -53,22 +53,11 @@ function idProduto(produto) {
 }
 
 function formataPreco(preco) {
-	return "R$ " + preco.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+	return "R$&nbsp;" + preco.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 });
 }
 
 function montaCalculadora() {
-	const table = $('<table class="table table-sm table-bordered table-striped table-hover tabelaDePrecos">');
-	
-	const thead = $('<thead>');
-	thead
-			.append($('<tr>')
-					.append($('<th class="col-md-10">').append('Produto'))
-					.append($('<th class="col-md-1">').append('Preço'))
-					.append($('<th class="col-md-1">').append('Quantidade')));
-	table.append(thead);
-
 	const tbody = $('<tbody>');
-
 	for (const item of dados.tabelaDePrecos) {
 		const produto = Object.keys(item)[0];
 		const preco = item[produto];
@@ -85,8 +74,14 @@ function montaCalculadora() {
 										.append($('<button class="btn btn-success btn-sm" type="button" onclick="javascript:add(\'' + idProduto(produto) + '\', 1);">&plus;</button>')))));
 	}
 
-	table.append(tbody);
-	$('#calcj').append(table);
+	$('#calcj')
+			.append($('<table class="table table-sm table-bordered table-striped table-hover tabelaDePrecos">')
+					.append($('<thead>')
+							.append($('<tr>')
+									.append($('<th class="col-md-10">').append('Produto'))
+									.append($('<th class="col-md-1">').append('Preço'))
+									.append($('<th class="col-md-1">').append('Quantidade'))))
+					.append(tbody));
 	total();
 }
 
@@ -110,15 +105,50 @@ function zera() {
 
 function total() {
 	$('#total').empty();
+	$('#conferencia').empty();
 	let total = 0;
+	const tbody = $('<tbody>');
 
+	const ulConferencia = $('<ul>')
 	for (const item of dados.tabelaDePrecos) {
 		const produto = Object.keys(item)[0];
 		const preco = item[produto];
 		const quantidade = $('#qtd_' + idProduto(produto)).val();
-		total += quantidade * preco;
+		const totalItem = quantidade * preco
+		total += totalItem;
+		if (quantidade > 0) {
+			tbody
+					.append($('<tr>')
+							.append($('<td>')
+									.append(produto))
+							.append($('<td class="text-end">')
+									.append(formataPreco(preco)))
+							.append($('<td class="text-end">')
+									.append(quantidade))
+							.append($('<td class="text-end">')
+									.append(formataPreco(totalItem))));
+		}
 	}
+
 	$('#total').val(formataPreco(total));
+
+	$('#conferencia')
+			.append($('<h1>')
+					.append('Conferência'))
+			.append($('<table class="table table-sm table-bordered table-striped table-hover tabelaDePrecos">')
+					.append($('<thead>')
+							.append($('<tr>')
+									.append($('<th class="col-md-10">').append('Produto'))
+									.append($('<th class="col-md-1">').append('Preço'))
+									.append($('<th class="col-md-1">').append('Qtd'))
+									.append($('<th class="col-md-1">').append('Total'))))
+					.append(tbody)
+					.append($('<tfoot>')
+							.append($('<tr>')
+									.append($('<th colspan="3">')
+											.append('TOTAL'))
+									.append($('<th class="text-end">')
+											.append(formataPreco(total))))));
 }
 
 $(document).ready(async function() {
