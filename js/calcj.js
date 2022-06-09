@@ -9,6 +9,7 @@ try {
 
 const dados = {
 	tabelaDePrecos: [
+		{ "BEBIDAS": 0 },
 		{ "Água mineral": 4.00 },
 		{ "Cerveja Heineken": 7.00 },
 		{ "Chocolate quente": 5.00 },
@@ -19,6 +20,7 @@ const dados = {
 		{ "Vinho Reserve 1853 - Tinto 750ml": 150.00 },
 		{ "Vinho Terras Lusas - Tinto taça 150ml": 15.00 },
 		{ "Vinho Sol Fa Soul - Tinto 750ml": 100.00 },
+		{ "ALIMENTAÇÃO": 0 },
 		{ "Algodão-doce": 6.00 },
 		{ "Arroz carreteiro": 18.00 },
 		{ "Batata frita pequena": 10.00 },
@@ -40,6 +42,7 @@ const dados = {
 		{ "Pizza brotinho": 10.00 },
 		{ "Tapioca recheada": 10.00 },
 		{ "Tapioca simples": 5.00 },
+		{ "DIVERSOS": 0 },
 		{ "Argola": 8.00 },
 		{ "Cadeia": 5.00 },
 		{ "Correio elegante": 5.00 },
@@ -65,27 +68,35 @@ function formataPreco(preco) {
 
 function montaCalculadora() {
 	const tbody = $('<tbody>');
-	for (const item of dados.tabelaDePrecos) {
+	const tabelaDePrecos = dados.tabelaDePrecos;
+	for (const item of tabelaDePrecos) {
 		const produto = Object.keys(item)[0];
 		const preco = item[produto];
-		tbody
-				.append($('<tr>')
-						.append($('<td class="produto">')
-								.append(produto))
-						.append($('<td class="preco text-end">')
-								.append(formataPreco(preco)))
-						.append($('<td class="quantidade">')
-								.append($('<div class="input-group mb-3">')
-										.append($('<button class="btn btn-danger btn-sm" type="button" onclick="javascript:add(\'' + idProduto(produto) + '\', -1);">&minus;</button>'))
-										.append($('<input type="number" class="form-control" id="qtd_' + idProduto(produto) + '" value="0">'))
-										.append($('<button class="btn btn-success btn-sm" type="button" onclick="javascript:add(\'' + idProduto(produto) + '\', 1);">&plus;</button>')))));
+		if (preco > 0) {
+			tbody
+					.append($('<tr>')
+							.append($('<td class="produto">')
+									.append(produto))
+							.append($('<td class="preco text-end">')
+									.append(formataPreco(preco)))
+							.append($('<td class="quantidade">')
+									.append($('<div class="input-group mb-3">')
+											.append($('<button class="btn btn-danger btn-sm" type="button" onclick="javascript:add(\'' + idProduto(produto) + '\', -1);">&minus;</button>'))
+											.append($('<input type="number" class="form-control" id="qtd_' + idProduto(produto) + '" value="0">'))
+											.append($('<button class="btn btn-success btn-sm" type="button" onclick="javascript:add(\'' + idProduto(produto) + '\', 1);">&plus;</button>')))));
+		} else {
+			tbody
+					.append($('<tr>')
+							.append($('<th class="subtitulo" colspan="3">')
+									.append(produto)));
+		}
 	}
 
 	$('#calcj')
 			.append($('<table class="table table-sm table-bordered table-striped table-hover tabelaDePrecos">')
 					.append($('<thead>')
 							.append($('<tr>')
-									.append($('<th class="col-md-10">').append('Produto'))
+									.append($('<th class="col-md-10">').append('Produto').append('<input type="checkbox" id="sort" class="float-end">'))
 									.append($('<th class="col-md-1">').append('Preço'))
 									.append($('<th class="col-md-1">').append('Qtd'))))
 					.append(tbody));
@@ -125,20 +136,22 @@ function total() {
 	for (const item of dados.tabelaDePrecos) {
 		const produto = Object.keys(item)[0];
 		const preco = item[produto];
-		const quantidade = $('#qtd_' + idProduto(produto)).val();
-		const totalItem = quantidade * preco
-		total += totalItem;
-		if (quantidade > 0) {
-			tbody
-					.append($('<tr>')
-							.append($('<td>')
-									.append(produto))
-							.append($('<td class="text-end">')
-									.append(formataPreco(preco)))
-							.append($('<td class="text-end">')
-									.append(quantidade))
-							.append($('<td class="text-end">')
-									.append(formataPreco(totalItem))));
+		if (preco > 0) {
+			const quantidade = $('#qtd_' + idProduto(produto)).val();
+			const totalItem = quantidade * preco
+			total += totalItem;
+			if (quantidade > 0) {
+				tbody
+						.append($('<tr>')
+								.append($('<td>')
+										.append(produto))
+								.append($('<td class="text-end">')
+										.append(formataPreco(preco)))
+								.append($('<td class="text-end">')
+										.append(quantidade))
+								.append($('<td class="text-end">')
+										.append(formataPreco(totalItem))));
+			}
 		}
 		if (dinheiro > 0) {
 			troco = dinheiro - total;

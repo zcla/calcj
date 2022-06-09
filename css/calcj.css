@@ -22,3 +22,9 @@ input[type="number"] {
 #zera {
 	border-radius: 100%;
 }
+
+.subtitulo {
+	background-color: #006 !important;
+	color: white !important;
+	text-align: center;
+}
