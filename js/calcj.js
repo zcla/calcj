@@ -96,7 +96,7 @@ function montaCalculadora() {
 			.append($('<table class="table table-sm table-bordered table-striped table-hover tabelaDePrecos">')
 					.append($('<thead>')
 							.append($('<tr>')
-									.append($('<th class="col-md-10">').append('Produto').append('<input type="checkbox" id="sort" class="float-end">'))
+									.append($('<th class="col-md-10">').append('Produto'))
 									.append($('<th class="col-md-1">').append('Preço'))
 									.append($('<th class="col-md-1">').append('Qtd'))))
 					.append(tbody));
