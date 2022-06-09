@@ -137,7 +137,7 @@ function total() {
 		}
 	}
 
-	$('#total').val(formataPreco(total));
+	$('#total').append(formataPreco(total));
 
 	$('#conferencia')
 			.append($('<h1>')
