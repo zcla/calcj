@@ -111,7 +111,10 @@ function zera() {
 }
 
 function total() {
-	const dinheiro = $('#dinheiro').val();
+	let dinheiro = 100;
+	if ($('#dinheiro').val() > 0) {
+		dinheiro = $('#dinheiro').val();
+	}
 	let troco = '';
 	$('#total').empty();
 	$('#conferencia').empty();
@@ -140,7 +143,9 @@ function total() {
 		if (dinheiro > 0) {
 			troco = dinheiro - total;
 			if (troco < 0) {
-				troco = "";
+				troco = "Dinheiro insuficiente";
+			} else {
+				troco = formataPreco(troco)
 			}
 		}
 	}
@@ -168,12 +173,15 @@ function total() {
 									.append($('<th colspan="3">')
 											.append('Dinheiro'))
 									.append($('<th>')
-											.append('<input type="number" id="dinheiro" class="form-control" min="0" max="1000" value="' + dinheiro + '" onchange="javascript:total();">')))
+											/*.append($('<div class="input-group mb-3">')
+													.append('<span class="input-group-text">R$</span>')*/
+													.append('<input type="number" id="dinheiro" class="form-control" min="0" max="1000" value="' + dinheiro + '" onchange="javascript:total();">')
+													/*.append('<span class="input-group-text">,00</span>'))*/))
 							.append($('<tr>')
 									.append($('<th colspan="3">')
 											.append('Troco'))
-									.append($('<th>')
-											.append('<input type="number" id="troco" class="form-control" min="0" max="1000" disabled value="' + troco + '">')))));
+									.append($('<th class="text-end">')
+											.append(troco)))));
 }
 
 $(document).ready(async function() {
