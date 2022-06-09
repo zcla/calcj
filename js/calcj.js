@@ -12,7 +12,8 @@ const dados = {
 		{ "Água mineral": 4.00 },
 		{ "Cerveja Heineken": 7.00 },
 		{ "Chocolate quente": 5.00 },
-		{ "Quentão": 6.00 },
+		{ "Quentão pequeno": 6.00 },
+		{ "Quentão grande": 7.00 },
 		{ "Refrigerante": 6.00 },
 		{ "Suco": 5.00 },
 		{ "Vinho Reserve 1853 - Tinto 750ml": 150.00 },
@@ -110,6 +111,8 @@ function zera() {
 }
 
 function total() {
+	const dinheiro = $('#dinheiro').val();
+	let troco = '';
 	$('#total').empty();
 	$('#conferencia').empty();
 	let total = 0;
@@ -134,6 +137,12 @@ function total() {
 							.append($('<td class="text-end">')
 									.append(formataPreco(totalItem))));
 		}
+		if (dinheiro > 0) {
+			troco = dinheiro - total;
+			if (troco < 0) {
+				troco = "";
+			}
+		}
 	}
 
 	$('#total').append(formataPreco(total));
@@ -154,7 +163,17 @@ function total() {
 									.append($('<th colspan="3">')
 											.append('TOTAL'))
 									.append($('<th class="text-end">')
-											.append(formataPreco(total))))));
+											.append(formataPreco(total))))
+							.append($('<tr>')
+									.append($('<th colspan="3">')
+											.append('Dinheiro'))
+									.append($('<th>')
+											.append('<input type="number" id="dinheiro" class="form-control" min="0" max="1000" value="' + dinheiro + '">')))
+							.append($('<tr>')
+									.append($('<th colspan="3">')
+											.append('Troco'))
+									.append($('<th>')
+											.append('<input type="number" id="troco" class="form-control" min="0" max="1000" disabled value="' + troco + '">')))));
 }
 
 $(document).ready(async function() {
