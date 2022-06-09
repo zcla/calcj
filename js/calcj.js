@@ -62,9 +62,9 @@ function montaCalculadora() {
 	const thead = $('<thead>');
 	thead
 			.append($('<tr>')
-					.append($('<th>').append('Produto'))
-					.append($('<th>').append('Preço'))
-					.append($('<th>').append('Quantidade')));
+					.append($('<th class="col-md-10">').append('Produto'))
+					.append($('<th class="col-md-1">').append('Preço'))
+					.append($('<th class="col-md-1">').append('Quantidade')));
 	table.append(thead);
 
 	const tbody = $('<tbody>');
@@ -80,9 +80,9 @@ function montaCalculadora() {
 								.append(formataPreco(preco)))
 						.append($('<td class="quantidade">')
 								.append($('<div class="input-group mb-3">')
-										.append($('<button class="btn btn-danger" type="button" onclick="javascript:add(\'' + idProduto(produto) + '\', -1);">&minus;</button>'))
+										.append($('<button class="btn btn-danger btn-sm" type="button" onclick="javascript:add(\'' + idProduto(produto) + '\', -1);">&minus;</button>'))
 										.append($('<input type="number" class="form-control" id="qtd_' + idProduto(produto) + '" value="0">'))
-										.append($('<button class="btn btn-success" type="button" onclick="javascript:add(\'' + idProduto(produto) + '\', 1);">&plus;</button>')))));
+										.append($('<button class="btn btn-success btn-sm" type="button" onclick="javascript:add(\'' + idProduto(produto) + '\', 1);">&plus;</button>')))));
 	}
 
 	table.append(tbody);

@@ -2,25 +2,21 @@
 <html lang="pt-br">
 	<head>
 		<meta charset="utf-8">
-		<meta name="description" content="Calculadora Junina">
 		<meta name="viewport" content="width=device-width, initial-scale=1">
-		<link rel="stylesheet" href="css/3rdp/bootstrap.min.css">
-		<script src="js/3rdp/jquery.min.js"></script>
-		<script src="js/3rdp/bootstrap.bundle.min.js"></script>
+		<meta name="description" content="Calculadora Junina">
 		<title>Paróquia São Pedro de Alcântara - Calculadora Junina</title>
-		<link rel="icon" type="image/x-icon" href="favicon.ico">
+		<link rel="stylesheet" href="css/3rdp/bootstrap.min.css">
 		<link rel="stylesheet" href="css/calcj.css">
-		<!-- Geral (menu/visão/html/sei lá) -->
-		<script src="js/calcj.js"></script>
+		<link rel="icon" type="image/x-icon" href="favicon.ico">
 	</head>
 	<body>
-		<nav class="navbar navbar-expand-sm navbar-dark bg-dark">
+		<header class="navbar navbar-dark sticky-top bg-dark flex-md-nowrap p-0 shadow">
 			<div class="container-fluid">
-				<a class="navbar-brand" href="#">Calculadora Junina</a>
+				<a class="navbar-brand col-md-3 col-lg-1 me-0 px-3 fs-6" href="#">Calculadora Junina</a>
 				<input type="text" id="total" disabled class="col-3">
-				<button class="btn btn-primary" type="button" onclick="javascript:zera();">Zera</button>
+				<button class="btn btn-primary btn-sm" type="button" onclick="javascript:zera();">Zera</button>
 			</div>
-		</nav>
+		</header>
 		<div class="container-fluid">
 			<div id="mensagens">
 			</div>
@@ -29,5 +25,8 @@
 			<div id="conferencia">
 			</div>
 		</div>
+		<script src="js/3rdp/jquery.min.js"></script>
+		<script src="js/3rdp/bootstrap.bundle.min.js"></script>
+		<script src="js/calcj.js"></script>
 	</body>
 </html>
