@@ -1,5 +1,12 @@
 "use strict";
 
+// Tenta resolver o problema do cache
+try {
+	window.applicationCache.swapCache();
+} catch {
+	// só para evitar o erro
+}
+
 const dados = {
 	tabelaDePrecos: [
 		{ "ÁGUA MINERAL": 4.00 },
