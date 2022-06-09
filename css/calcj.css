@@ -18,3 +18,7 @@ input[type="number"] {
 .quantidade div {
 	margin-bottom: 0 !important;
 }
+
+#zera {
+	border-radius: 100%;
+}
