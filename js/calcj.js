@@ -168,7 +168,7 @@ function total() {
 									.append($('<th colspan="3">')
 											.append('Dinheiro'))
 									.append($('<th>')
-											.append('<input type="number" id="dinheiro" class="form-control" min="0" max="1000" value="' + dinheiro + '">')))
+											.append('<input type="number" id="dinheiro" class="form-control" min="0" max="1000" value="' + dinheiro + '" onkeyup="javascript:total();">')))
 							.append($('<tr>')
 									.append($('<th colspan="3">')
 											.append('Troco'))
