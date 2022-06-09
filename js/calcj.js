@@ -1,7 +1,7 @@
 "use strict";
 
 const dados = {
-	precos: [
+	tabelaDePrecos: [
 		{ "ÁGUA MINERAL": 4.00 },
 		{ "CERVEJA HEINEKEN": 7.00 },
 		{ "CHOCOLATE QUENTE": 5.00 },
@@ -42,36 +42,62 @@ const dados = {
 	]
 };
 
-class Menu {
-	static async calculadora() {
-		const table = $('<table class="table table-sm table-bordered table-striped table-hover ministros">');
-		
-		const thead = $('<thead>');
-		thead
-				.append($('<tr>')
-						.append($('<th>').append('Produto'))
-						.append($('<th>').append('Preço')));
-		table.append(thead);
+let atual = [];
 
-		const tbody = $('<tbody>');
+function idProduto(produto) {
+	return produto.replace(' ', '_');
+}
 
-		for (const item of dados.precos) {
-			const produto = Object.keys(item)[0];
-			const preco = item[produto];
-			tbody
-					.append($('<tr>')
-							.append($('<td class="produto">')
-									.append(produto))
-							.append($('<td class="preco text-end">')
-									.append("R$ ")
-									.append(preco.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }))));
-		}
-
-		table.append(tbody);
-		$('#calcj').append(table);
+function add(produto, quantidade) {
+	if (!atual[produto]) {
+		atual[produto] = 0;
 	}
+	atual[produto] += quantidade;
+	if (atual[produto] < 0) {
+		atual[produto] = 0;
+	}
+	$('#qtd_' + produto).val(atual[produto]);
+}
+
+function limpa() {
+	atual = [];
+	$('input[type="number"]').val(0);
+}
+
+function calculadora() {
+	const table = $('<table class="table table-sm table-bordered table-striped table-hover tabelaDePrecos">');
+	
+	const thead = $('<thead>');
+	thead
+			.append($('<tr>')
+					.append($('<th>').append('Produto'))
+					.append($('<th>').append('Preço'))
+					.append($('<th>').append('Quantidade')));
+	table.append(thead);
+
+	const tbody = $('<tbody>');
+
+	for (const item of dados.tabelaDePrecos) {
+		const produto = Object.keys(item)[0];
+		const preco = item[produto];
+		tbody
+				.append($('<tr>')
+						.append($('<td class="produto">')
+								.append(produto))
+						.append($('<td class="preco text-end">')
+								.append("R$ ")
+								.append(preco.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })))
+						.append($('<td class="quantidade">')
+								.append($('<div class="input-group mb-3">')
+										.append($('<button class="btn btn-danger" type="button" onclick="javascript:add(\'' + idProduto(produto) + '\', -1);">&minus;</button>'))
+										.append($('<input type="number" class="form-control" id="qtd_' + idProduto(produto) + '" value="0">'))
+										.append($('<button class="btn btn-success" type="button" onclick="javascript:add(\'' + idProduto(produto) + '\', 1);">&plus;</button>')))));
+	}
+
+	table.append(tbody);
+	$('#calcj').append(table);
 }
 
 $(document).ready(async function() {
-	Menu.calculadora();
+	calculadora();
 });
