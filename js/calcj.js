@@ -86,7 +86,7 @@ function montaCalculadora() {
 							.append($('<tr>')
 									.append($('<th class="col-md-10">').append('Produto'))
 									.append($('<th class="col-md-1">').append('Preço'))
-									.append($('<th class="col-md-1">').append('Quantidade'))))
+									.append($('<th class="col-md-1">').append('Qtd'))))
 					.append(tbody));
 	total();
 }

@@ -14,3 +14,7 @@ input[type="number"] {
 #total {
 	text-align: right !important;
 }
+
+.quantidade div {
+	margin-bottom: 0 !important;
+}
