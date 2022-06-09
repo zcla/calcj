@@ -8,9 +8,9 @@ const dados = {
 		{ "QUENTÃO": 6.00 },
 		{ "REFRIGERANTE": 6.00 },
 		{ "SUCO": 5.00 },
-		{ "VINHO RESERVE 1853 TINTO – 750ml": 150.00 },
+		{ "VINHO RESERVE 1853 TINTO - 750ml": 150.00 },
 		{ "VINHO TERRAS LUSAS TINTO (TAÇA 150 ML)": 15.00 },
-		{ "VINHO SOL FA SOUL TINTO – 750ml": 100.00 },
+		{ "VINHO SOL FA SOUL TINTO - 750ml": 100.00 },
 		{ "ALGODÃO DOCE": 6.00 },
 		{ "ARROZ CARRETEIRO": 18.00 },
 		{ "BATATA FRITA P": 10.00 },
@@ -45,7 +45,11 @@ const dados = {
 let atual = [];
 
 function idProduto(produto) {
-	return produto.replace(' ', '_');
+	return produto
+		.replaceAll(' ', '_')
+		.replaceAll('-', '_')
+		.replaceAll('(', '_')
+		.replaceAll(')', '_');
 }
 
 function add(produto, quantidade) {
