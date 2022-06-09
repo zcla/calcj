@@ -1,2 +1,1 @@
-# mesce-frontend
-Aplicação para gerenciamento de grupos de Mesce
+Aplicação para facilitar a vida dos caixas da festa junina da Paróquia São Pedro de Alcântara, Brasília, DF.
