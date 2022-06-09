@@ -1,418 +1,77 @@
 "use strict";
 
-// Tenta resolver o problema do cache dos json => https://webplatform.github.io/docs/apis/appcache/ApplicationCache/swapCache/
-try {
-	window.applicationCache.swapCache();
-} catch {
-	// só para evitar o erro
-}
-
-let data = null;
-
-// TODO https://www.jsviews.com/
+const dados = {
+	precos: [
+		{ "ÁGUA MINERAL": 4.00 },
+		{ "CERVEJA HEINEKEN": 7.00 },
+		{ "CHOCOLATE QUENTE": 5.00 },
+		{ "QUENTÃO": 6.00 },
+		{ "REFRIGERANTE": 6.00 },
+		{ "SUCO": 5.00 },
+		{ "VINHO RESERVE 1853 TINTO – 750ml": 150.00 },
+		{ "VINHO TERRAS LUSAS TINTO (TAÇA 150 ML)": 15.00 },
+		{ "VINHO SOL FA SOUL TINTO – 750ml": 100.00 },
+		{ "ALGODÃO DOCE": 6.00 },
+		{ "ARROZ CARRETEIRO": 18.00 },
+		{ "BATATA FRITA P": 10.00 },
+		{ "BATATA FRITA G": 13.00 },
+		{ "BOBÓ DE CAMARÃO": 20.00 },
+		{ "BOBÓ VEGANO (VEGETARIANO)": 15.00 },
+		{ "CACHORRO QUENTE": 8.00 },
+		{ "CALDOS": 8.00 },
+		{ "CAMARÃO EMPANADO": 15.00 },
+		{ "CANJICA": 8.00 },
+		{ "CHURRASCO": 10.00 },
+		{ "CREPE": 18.00 },
+		{ "CURAU": 7.00 },
+		{ "DOCES (A PARTIR DE)": 4.00 },
+		{ "GALINHADA": 16.00 },
+		{ "MILHO VERDE": 5.00 },
+		{ "PAMONHA": 12.00 },
+		{ "PASTEL": 8.00 },
+		{ "PIPOCA": 6.00 },
+		{ "PIZZA BROTINHO": 10.00 },
+		{ "TAPIOCA RECHEADA": 10.00 },
+		{ "TAPIOCA SIMPLES": 5.00 },
+		{ "ARGOLA": 8.00 },
+		{ "CADEIA": 5.00 },
+		{ "CORREIO ELEGANTE": 5.00 },
+		{ "EMBALAGEM": 2.00 },
+		{ "PESCARIA": 8.00 },
+		{ "PULA-PULA": 8.00 }
+	]
+};
 
 class Menu {
-	static async agenda(data)	{
-		if (GuiUtils.isMobile()) {
-			await Menu.agendaDia(data);
-		} else {
-			await Menu.agendaMes(data);
-		}
-	}
-
-	// TODO otimizar o código
-	// TODO reaproveitar partes repetidas
-	static async agendaDia(data) {
-		GuiUtils.mensagensLimpa();
-		GuiUtils.conteudoLimpa();
-		
-		const hoje = new Date((new Date()).toDateString());
-		let dataAgenda = new Date();
-		if (data) {
-			dataAgenda.setTime(parseInt(data));
-		}
-		dataAgenda = new Date(dataAgenda);
-
-		const eventos = await Evento.agendaMes(dataAgenda);
-		
-		const table = $('<table class="table table-sm table-bordered agenda">');
-		GuiUtils.conteudoAdiciona(table);
-		
-		table.append($('<caption>')
-				.append($('<button type="button" class="btn btn-dark float-start" onclick="javascript:Menu.agendaDia(\'' + DateUtils.adicionaDias(dataAgenda, -1).getTime() + '\');">')
-						.append("&#8592;"))
-				.append(dataAgenda.getDate().toString().padStart(2, "0"))
-				.append('/')
-				.append($('<span onclick="javascript:Menu.agendaMes(\'' + dataAgenda.getTime() + '\');">')
-						.append((dataAgenda.getMonth() + 1).toString().padStart(2, "0")))
-				.append('/')
-				.append(dataAgenda.getFullYear())
-				.append($('<button type="button" class="btn btn-dark float-end" onclick="javascript:Menu.agendaDia(\'' + DateUtils.adicionaDias(dataAgenda, 1).getTime() + '\');">')
-						.append("&#8594;")));
-		
-		const tbody = $('<tbody>');
-		
-		let tr = $('<tr>');
-		tbody.append(tr);
-		
-		let antesDepois = 'hoje';
-		if (dataAgenda.toISOString() < hoje.toISOString()) {
-			antesDepois = 'antes';
-		}
-		if (dataAgenda.toISOString() > hoje.toISOString()) {
-			antesDepois = 'depois';
-		}
-		
-		const td = $('<td class="' + antesDepois + '">');
-		tr.append(td);
-		
-		td.append($('<div class="agendaConteudo">'));
-
-		for (const evento of eventos.eventos) {
-			if (evento.data.toDateString() == dataAgenda.toDateString()) {
-				const div = $('<div class="evento">');
-				if (evento.tipo) {
-					div.addClass(evento.tipo);
-				}
-				if (evento.icone) {
-					div.append(evento.icone).append(' ');
-				}
-				if (evento.hora) {
-					div.append($('<b>').append(evento.hora)).append(' ');
-				}
-				div.append(evento.nome);
-				$(tr.find(".agendaConteudo").slice(-1)[0]).append(div);
-			}
-		}
-
-		table.append(tbody);
-	}
-
-	static async agendaMes(data) {
-		GuiUtils.mensagensLimpa();
-		GuiUtils.conteudoLimpa();
-		
-		const hoje = new Date((new Date()).toDateString());
-		let dataAgenda = new Date();
-		if (data) {
-			dataAgenda.setTime(parseInt(data));
-		}
-		dataAgenda = new Date(dataAgenda);
-
-		const eventos = await Evento.agendaMes(dataAgenda);
-
-		let dataInicial = eventos.inicioMes;
-		dataInicial.setDate(dataInicial.getDate() - dataInicial.getDay());
-		let dataFinal = eventos.fimMes;
-		while (dataFinal.getDay() % 7 != 6) {
-			dataFinal.setDate(dataFinal.getDate() + 1);
-		}
-
-		// Exagera pra garantir que estará nos meses anterior e seguinte
-		dataInicial.setDate(dataInicial.getDate() - 1);
-		dataFinal.setDate(dataFinal.getDate() + 1);
-		
-		const table = $('<table class="table table-sm table-bordered agenda">');
-		GuiUtils.conteudoAdiciona(table);
-		
-		table.append($('<caption>')
-				.append($('<button type="button" class="btn btn-dark float-start" onclick="javascript:Menu.agenda(\'' + dataInicial.getTime() + '\');">')
-						.append("&#8592;"))
-				.append("&nbsp;")
-				.append(DateUtils.nomeMes(dataAgenda) + ' de ' + dataAgenda.getFullYear())
-				.append("&nbsp;")
-				.append($('<button type="button" class="btn btn-dark float-end" onclick="javascript:Menu.agenda(\'' + dataFinal.getTime() + '\');">')
-						.append("&#8594;")));
-
-		// Desfaz o exagero
-		dataInicial.setDate(dataInicial.getDate() + 1);
-		dataFinal.setDate(dataFinal.getDate() - 1);
-
-		const thead = $('<thead>');
-		thead.append(
-				$('<tr>')
-						.append($('<th>').append('Dom'))
-						.append($('<th>').append('Seg'))
-						.append($('<th>').append('Ter'))
-						.append($('<th>').append('Qua'))
-						.append($('<th>').append('Qui'))
-						.append($('<th>').append('Sex'))
-						.append($('<th>').append('Sáb'))
-		);
-		table.append(thead);
-		
-		const tbody = $('<tbody>');
-		
-		let tr = null;
-		
-		let dataAtual = new Date(dataInicial);
-		while (dataAtual <= dataFinal) {
-			if (dataAtual.getDay() % 7 == 0) {
-				tr = $('<tr>');
-				tbody.append(tr);
-			}
-			
-			let antesDepois = 'hoje';
-			if (dataAtual.toISOString() < hoje.toISOString()) {
-				antesDepois = 'antes';
-			}
-			if (dataAtual.toISOString() > hoje.toISOString()) {
-				antesDepois = 'depois';
-			}
-			
-			const td = $('<td class="' + antesDepois + '">');
-			tr.append(td);
-			
-			if (dataAtual.getMonth() == dataAgenda.getMonth()) {
-				td
-						.append($('<div class="agendaDia" onclick="javascript:Menu.agendaDia(\'' + dataAtual.getTime() + '\');">')
-								.append(dataAtual.getDate()))
-						.append($('<div class="agendaConteudo">'));
-
-				for (const evento of eventos.eventos) {
-					if (evento.data.toDateString() == dataAtual.toDateString()) {
-						const div = $('<div class="evento">');
-						if (evento.tipo) {
-							div.addClass(evento.tipo);
-						}
-						if (evento.icone) {
-							div.append(evento.icone).append(' ');
-						}
-						if (evento.hora) {
-							div.append($('<b>').append(evento.hora)).append(' ');
-						}
-						div.append(evento.nome);
-						$(tr.find(".agendaConteudo").slice(-1)[0]).append(div);
-					}
-				}
-			}
-
-			dataAtual.setDate(dataAtual.getDate() + 1);
-		}
-		table.append(tbody);
-	}
-
-	static async escala() {
-		GuiUtils.mensagensLimpa();
-		GuiUtils.conteudoLimpa();
-		
-		const table = $('<table class="table table-sm table-bordered table-striped escala">');
-		GuiUtils.conteudoAdiciona(table);
-		
-		const escala = await Escala.mostraMissas();
-
-		const thead = $('<thead>');
-		thead.append(
-				$('<tr>')
-						.append($('<th>').append('Missa (' + escala.escala.length + ')'))
-						.append($('<th>').append('Escalar (' + escala.escalar + ')'))
-						.append($('<th>').append('Ministros escalados (' + escala.escalados + ')'))
-		);
-		table.append(thead);
-
-		const tbody = $('<tbody>');
-		
-		for (const item of escala.escala) {
-			let escalados = "";
-			for (const ministro of item.escalados) {
-				escalados += ministro + ", ";
-			}
-			escalados = escalados.substring(0, escalados.length - 2);
-			
-			tbody
-					.append($('<tr>')
-							.append($('<td class="missa">')
-									.append(item.nome))
-							.append($('<td class="escalar">')
-									.append(item.escalar))
-							.append($('<td class="escalados">')
-									.append(escalados)
-									.append($('<span class="badge float-end ' + item.situacao() + '">')
-											.append(item.situacao()))));
-		}
-
-		table.append(tbody);
-	}
-
-	static async ministrosLista() {
-		GuiUtils.mensagensLimpa();
-		GuiUtils.conteudoLimpa();
-
+	static async calculadora() {
 		const table = $('<table class="table table-sm table-bordered table-striped table-hover ministros">');
-		GuiUtils.conteudoAdiciona(table);
-
-		const lista = await Ministro.lista();
 		
 		const thead = $('<thead>');
 		thead
 				.append($('<tr>')
-						.append($('<th rowspan="2">').append('Nome (' + lista.total + ')'))
-						.append($('<th rowspan="2">').append('Aniversário'))
-						.append($('<th colspan="3">').append('Disponibilidade')))
-				.append($('<tr>')
-						.append($('<th>').append('Enfermos (' + lista.disponibilidade.enfermos + ')'))
-						.append($('<th>').append('Missas (' + lista.disponibilidade.missas + ')'))
-						.append($('<th>').append('Eventos arquidiocesanos (' + lista.disponibilidade.arquidiocese + ')')));
+						.append($('<th>').append('Produto'))
+						.append($('<th>').append('Preço')));
 		table.append(thead);
 
 		const tbody = $('<tbody>');
 
-		for (const ministro of lista.ministros) {
-			let nomeFormatado = ministro.nomeFormatado();
-			const nome = $('<span>').append(nomeFormatado);
-			if (ministro.funcao) {
-				nome.append($('<span class="badge float-end funcao">')
-						.append(ministro.funcao));
-			}
-			let disponibilidade_Enfermos = false;
-			let disponibilidade_Missas = false;
-			let disponibilidade_Arquidiocese = false;
-			if (ministro.disponibilidade) {
-				disponibilidade_Enfermos = ministro.disponibilidade.includes('enfermos');
-				disponibilidade_Missas = ministro.disponibilidade.includes('missas');
-				disponibilidade_Arquidiocese = ministro.disponibilidade.includes('arquidiocese');
-			}
-			const disponibilidadeMissas = $('<span>').append(GuiUtils.simboloCondicao(disponibilidade_Missas));
-			if (ministro.escaladoMissas) {
-				disponibilidadeMissas.append(' (' + ministro.escaladoMissas + ')')
-			}
-			const disponibilidadeArquidiocese = $('<span>').append(GuiUtils.simboloCondicao(disponibilidade_Arquidiocese));
-
+		for (const item of dados.precos) {
+			const produto = Object.keys(item)[0];
+			const preco = item[produto];
 			tbody
 					.append($('<tr>')
-							.append($('<td class="nome">')
-									.append(nome))
-							.append($('<td class="aniversario">')
-									.append(ministro.aniversario))
-							.append($('<td class="disponibilidade_enfermos">')
-									.append(GuiUtils.simboloCondicao(disponibilidade_Enfermos)))
-							.append($('<td class="disponibilidade_missas">')
-									.append(disponibilidadeMissas))
-							.append($('<td class="disponibilidade_arquidiocese">')
-									.append(disponibilidadeArquidiocese)));
+							.append($('<td class="produto">')
+									.append(produto))
+							.append($('<td class="preco text-end">')
+									.append("R$ ")
+									.append(preco.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }))));
 		}
 
 		table.append(tbody);
-	}
-
-	static async compromissos(dias) {
-		if ((!dias) || (dias < 1)) {
-			dias = 14;
-		}
-
-		GuiUtils.mensagensLimpa();
-		GuiUtils.conteudoLimpa();
-		
-		const table = $('<table class="table table-sm table-bordered table-striped servico">');
-		GuiUtils.conteudoAdiciona(table);
-
-		const thead = $('<thead>');
-		thead.append(
-				$('<tr>')
-						.append($('<th>').append('Data'))
-						.append($('<th>').append('Hora'))
-						.append($('<th>').append('Evento'))
-						.append($('<th>').append('Ministros'))
-		);
-		table.append(thead);
-
-		const tbody = $('<tbody>');
-		const dataAtual = new Date((new Date()).toDateString());
-		const dataFinal = new Date(dataAtual);
-		dataFinal.setDate(dataFinal.getDate() + dias - 1);
-/*
-		const eventos = Evento.ordenaCronologicamente(await Evento.instanciaEventosNaEscalaDoPeriodo(dataAtual, dataFinal));
-
-		for (let dia = 0; dia < dias; dia++) {
-			for (const evento of eventos) {
-				if (evento.data.toDateString() == dataAtual.toDateString()) {
-					const escalados = $('<ul class="list-group list-group-horizontal">');
-					const situacao = $('<span class="badge float-end">');
-					let numEscalar = 0;
-					let listaEscalados = [];
-					let numEscalados = 0;
-					let ministrosSubstitutos = [];
-					
-					if (evento.itemEscala) {
-						numEscalar = evento.itemEscala.escalar;
-						listaEscalados = evento.itemEscala.escalados;
-					} else {
-						numEscalar = evento.escalar;
-						for (const escalado of evento.escalados) {
-							listaEscalados.push(await Ministro.buscaPorId(escalado)); // TODO deveria ser aqui mesmo??? Talvez tenha que ir pra dentro da classe, como ocorre no if acima
-						}
-					}
-					if (!listaEscalados) {
-						listaEscalados = [];
-					}
-					for (const ministro of listaEscalados) {
-						let afastado = false;
-						if (ministro.afastamentos) {
-							for (const afastamento of ministro.afastamentos) {
-								if (DateUtils.noIntervalo(dataAtual, DateUtils.stringToDate(afastamento.inicio), DateUtils.stringToDate(afastamento.fim))) {
-									afastado = true;
-									if (afastamento.substituto) {
-										for (const substituto of afastamento.substituto) {
-											if (DateUtils.mesmaData(DateUtils.stringToDate(substituto.data), dataAtual) && (substituto.idEscala == evento.itemEscala.id)) {
-												ministrosSubstitutos.push(await Ministro.buscaPorId(substituto.idMinistro));
-											}
-										}
-									}
-								}
-							}
-						}
-						if (afastado) {
-							escalados
-									.append($('<li class="list-group-item afastado">')
-											.append(ministro.nomeGuerra));
-						} else {
-							escalados
-									.append($('<li class="list-group-item">')
-											.append(ministro.nomeGuerra));
-							numEscalados++;
-						}
-					}
-
-					for (const ministroSubstituto of ministrosSubstitutos) {
-						escalados
-								.append($('<li class="list-group-item substituto">')
-										.append(ministroSubstituto.nomeGuerra));
-						numEscalados++;
-					}
-
-					if (numEscalados >= numEscalar) {
-						situacao.addClass('bg-success');
-						situacao.append('ok');
-					} else {
-						situacao.addClass('bg-danger');
-						const faltam = numEscalar - numEscalados;
-						situacao.append('falta' + (faltam == 1 ? '' : 'm') + ' ' + faltam);
-					}
-
-					tbody
-							.append($('<tr>')
-									.append($('<td class="data">')
-											.append(DateUtils.formataDDMMYYYYWWW(dataAtual)))
-									.append($('<td class="hora">')
-											.append(evento.hora))
-									.append($('<td class="evento">')
-											.append(evento.nome))
-									.append($('<td class="escalar">')
-											.append(numEscalar))
-									.append($('<td class="escalados">')
-											.append(situacao)
-											.append(escalados)));
-				}
-			}
-
-			dataAtual.setDate(dataAtual.getDate() + 1);
-		}
-*/
-
-		table.append(tbody);
+		$('#calcj').append(table);
 	}
 }
 
 $(document).ready(async function() {
-	Menu.ministrosLista();
+	Menu.calculadora();
 });
