@@ -10,3 +10,7 @@ thead tr th {
 input[type="number"] {
 	text-align: right !important;
 }
+
+#total {
+	text-align: right !important;
+}

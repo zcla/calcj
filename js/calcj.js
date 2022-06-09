@@ -52,23 +52,11 @@ function idProduto(produto) {
 		.replaceAll(')', '_');
 }
 
-function add(produto, quantidade) {
-	if (!atual[produto]) {
-		atual[produto] = 0;
-	}
-	atual[produto] += quantidade;
-	if (atual[produto] < 0) {
-		atual[produto] = 0;
-	}
-	$('#qtd_' + produto).val(atual[produto]);
+function formataPreco(preco) {
+	return "R$ " + preco.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 });
 }
 
-function limpa() {
-	atual = [];
-	$('input[type="number"]').val(0);
-}
-
-function calculadora() {
+function montaCalculadora() {
 	const table = $('<table class="table table-sm table-bordered table-striped table-hover tabelaDePrecos">');
 	
 	const thead = $('<thead>');
@@ -89,8 +77,7 @@ function calculadora() {
 						.append($('<td class="produto">')
 								.append(produto))
 						.append($('<td class="preco text-end">')
-								.append("R$ ")
-								.append(preco.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })))
+								.append(formataPreco(preco)))
 						.append($('<td class="quantidade">')
 								.append($('<div class="input-group mb-3">')
 										.append($('<button class="btn btn-danger" type="button" onclick="javascript:add(\'' + idProduto(produto) + '\', -1);">&minus;</button>'))
@@ -100,8 +87,40 @@ function calculadora() {
 
 	table.append(tbody);
 	$('#calcj').append(table);
+	total();
+}
+
+function add(produto, quantidade) {
+	if (!atual[produto]) {
+		atual[produto] = 0;
+	}
+	atual[produto] += quantidade;
+	if (atual[produto] < 0) {
+		atual[produto] = 0;
+	}
+	$('#qtd_' + produto).val(atual[produto]);
+	total();
+}
+
+function zera() {
+	atual = [];
+	$('input[type="number"]').val(0);
+	total();
+}
+
+function total() {
+	$('#total').empty();
+	let total = 0;
+
+	for (const item of dados.tabelaDePrecos) {
+		const produto = Object.keys(item)[0];
+		const preco = item[produto];
+		const quantidade = $('#qtd_' + idProduto(produto)).val();
+		total += quantidade * preco;
+	}
+	$('#total').val(formataPreco(total));
 }
 
 $(document).ready(async function() {
-	calculadora();
+	montaCalculadora();
 });
