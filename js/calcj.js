@@ -83,7 +83,7 @@ function montaCalculadora() {
 							.append($('<td class="quantidade">')
 									.append($('<div class="input-group">')
 											.append($('<button class="btn btn-danger btn-sm" type="button" onclick="javascript:add(\'' + idProduto(produto) + '\', -1);">&minus;</button>'))
-											.append($('<input type="number" class="form-control" id="qtd_' + idProduto(produto) + '" value="0">'))
+											.append($('<input type="number" class="form-control" id="qtd_' + idProduto(produto) + '" value="0" disabled>'))
 											.append($('<button class="btn btn-success btn-sm" type="button" onclick="javascript:add(\'' + idProduto(produto) + '\', 1);">&plus;</button>')))));
 		} else {
 			tbody
@@ -215,7 +215,7 @@ function total() {
 		divDinheiro.append('<button class="btn btn-warning btn-sm btn-outline-dark" type="button" onclick="javascript:nota(' + nota + ');">' + nota + '</button>');
 	}
 	divDinheiro
-			.append($('<input type="number" class="form-control" id="dinheiro" value="' + dinheiro + '" style="border-radius: 0;">'));
+			.append($('<input type="number" min="0" step="10" class="form-control" id="dinheiro" value="' + dinheiro + '" style="border-radius: 0;">'));
 
 	if (dinheiro > 0) {
 		troco = dinheiro - total;
