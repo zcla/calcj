@@ -96,9 +96,12 @@ function montaCalculadora() {
 			.append($('<table class="table table-sm table-bordered table-striped table-hover tabelaDePrecos">')
 					.append($('<thead>')
 							.append($('<tr>')
-									.append($('<th class="col-md-10">').append('Produto'))
-									.append($('<th class="col-md-1">').append('Preço'))
-									.append($('<th class="col-md-1">').append('Qtd'))))
+									.append($('<th class="col-md-10">')
+										.append('Produto'))
+									.append($('<th class="col-md-1">')
+										.append('Preço'))
+									.append($('<th class="col-md-1">')
+										.append('Qtd'))))
 					.append(tbody));
 	total();
 }
@@ -178,6 +181,8 @@ function total() {
 					.append(tbody)
 					.append($('<tfoot>')
 							.append($('<tr>')
+								.append('<th colspan="4" class="bg-dark">'))
+							.append($('<tr>')
 									.append($('<th colspan="3">')
 											.append('TOTAL'))
 									.append($('<th class="text-end">')
@@ -186,10 +191,7 @@ function total() {
 									.append($('<th colspan="3">')
 											.append('Dinheiro'))
 									.append($('<th>')
-											/*.append($('<div class="input-group mb-3">')
-													.append('<span class="input-group-text">R$</span>')*/
-													.append('<input type="number" id="dinheiro" class="form-control" min="0" max="1000" value="' + dinheiro + '" onchange="javascript:total();">')
-													/*.append('<span class="input-group-text">,00</span>'))*/))
+											.append('<input type="number" id="dinheiro" class="form-control" min="0" max="1000" value="' + dinheiro + '" onchange="javascript:total();">')))
 							.append($('<tr>')
 									.append($('<th colspan="3">')
 											.append('Troco'))
