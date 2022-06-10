@@ -19,10 +19,6 @@ class GuiUtils {
 		}
 	}
 
-	static mensagensLimpa() {
-		$('#mensagens').empty();
-	}
-
 	static simboloCondicao(condicao) {
 		if (condicao) {
 			return $('<span class="condicaoTrue">').append('&check;');

@@ -3,20 +3,12 @@ thead tr th {
 	vertical-align: middle;
 }
 
-#mensagens {
-	margin-top: 1rem;
-}
-
 input[type="number"] {
 	text-align: right !important;
 }
 
 #total {
 	text-align: right !important;
-}
-
-.quantidade div {
-	margin-bottom: 0 !important;
 }
 
 #zera {
@@ -27,4 +19,9 @@ input[type="number"] {
 	background-color: #006 !important;
 	color: white !important;
 	text-align: center;
+}
+
+.nota {
+	padding-left: 8pt;
+	padding-right: 8pt;
 }

@@ -80,7 +80,7 @@ function montaCalculadora() {
 							.append($('<td class="preco text-end">')
 									.append(formataPreco(preco)))
 							.append($('<td class="quantidade">')
-									.append($('<div class="input-group mb-3">')
+									.append($('<div class="input-group">')
 											.append($('<button class="btn btn-danger btn-sm" type="button" onclick="javascript:add(\'' + idProduto(produto) + '\', -1);">&minus;</button>'))
 											.append($('<input type="number" class="form-control" id="qtd_' + idProduto(produto) + '" value="0">'))
 											.append($('<button class="btn btn-success btn-sm" type="button" onclick="javascript:add(\'' + idProduto(produto) + '\', 1);">&plus;</button>')))));
@@ -124,8 +124,14 @@ function zera() {
 	total();
 }
 
+function nota(nota) {
+	$('#dinheiro').val(nota);
+	total();
+}
+
 function total() {
-	let dinheiro = 100;
+	const DINHEIRO_NOTAS = [ 10, 20, 30, 50, 60, 70, 100, 110, 120, 150, 200 ];
+	let dinheiro = 0;
 	if ($('#dinheiro').val() > 0) {
 		dinheiro = $('#dinheiro').val();
 	}
@@ -135,7 +141,6 @@ function total() {
 	let total = 0;
 	const tbody = $('<tbody>');
 
-	const ulConferencia = $('<ul>')
 	for (const item of dados.tabelaDePrecos) {
 		const produto = Object.keys(item)[0];
 		const preco = item[produto];
@@ -156,13 +161,40 @@ function total() {
 										.append(formataPreco(totalItem))));
 			}
 		}
-		if (dinheiro > 0) {
-			troco = dinheiro - total;
-			if (troco < 0) {
-				troco = "Dinheiro insuficiente";
-			} else {
-				troco = formataPreco(troco)
-			}
+	}
+
+	const divDinheiro = $('<div class="input-group">');
+	divDinheiro
+			.append($('<span class="input-group-text" id="basic-addon1" style="border-radius: 0;">')
+					.append('Dinheiro'));
+	let contNotas = 0;
+	for (let i = 0; i < DINHEIRO_NOTAS.length; i++) {
+		const nota = DINHEIRO_NOTAS[i];
+		if (nota >= total) {
+			divDinheiro.append('<button class="btn btn-warning btn-sm btn-outline-dark" type="button" onclick="javascript:nota(' + nota + ');">' + nota + '</button>');
+			contNotas++;
+		}
+		if (contNotas >= 4) {
+			break;
+		}
+	}
+	if (contNotas == 0) {
+		if (total % 100 <= 50) {
+			let nota = Math.trunc(total / 100) * 100 + 50;
+			divDinheiro.append('<button class="btn btn-warning btn-sm btn-outline-dark" type="button" onclick="javascript:nota(' + nota + ');">' + nota + '</button>');
+		}
+		let nota = (Math.trunc(total / 100) + 1) * 100;
+		divDinheiro.append('<button class="btn btn-warning btn-sm btn-outline-dark" type="button" onclick="javascript:nota(' + nota + ');">' + nota + '</button>');
+	}
+	divDinheiro
+			.append($('<input type="number" class="form-control" id="dinheiro" value="' + dinheiro + '" style="border-radius: 0;">'));
+
+	if (dinheiro > 0) {
+		troco = dinheiro - total;
+		if (troco < 0) {
+			troco = "Dinheiro insuficiente";
+		} else {
+			troco = formataPreco(troco);
 		}
 	}
 
@@ -171,7 +203,7 @@ function total() {
 	$('#conferencia')
 			.append($('<h1>')
 					.append('Conferência'))
-			.append($('<table class="table table-sm table-bordered table-striped table-hover tabelaDePrecos">')
+			.append($('<table class="table table-sm table-bordered table-striped table-hover conferencia">')
 					.append($('<thead>')
 							.append($('<tr>')
 									.append($('<th class="col-md-10">').append('Produto'))
@@ -188,10 +220,8 @@ function total() {
 									.append($('<th class="text-end">')
 											.append(formataPreco(total))))
 							.append($('<tr>')
-									.append($('<th colspan="3">')
-											.append('Dinheiro'))
-									.append($('<th>')
-											.append('<input type="number" id="dinheiro" class="form-control" min="0" max="1000" value="' + dinheiro + '" onchange="javascript:total();">')))
+									.append($('<th colspan="4"style="padding: 0; border: 0;">')
+											.append(divDinheiro)))
 							.append($('<tr>')
 									.append($('<th colspan="3">')
 											.append('Troco'))
