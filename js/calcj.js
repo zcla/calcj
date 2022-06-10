@@ -130,7 +130,7 @@ function nota(nota) {
 }
 
 function total() {
-	const DINHEIRO_NOTAS = [ 10, 20, 30, 50, 60, 70, 100, 110, 120, 150, 200 ];
+	const DINHEIRO_NOTAS = [ 10, 20, 30, 40, 50, 60, 70, 100, 110, 120, 150, 200 ];
 	let dinheiro = 0;
 	if ($('#dinheiro').val() > 0) {
 		dinheiro = $('#dinheiro').val();
@@ -174,7 +174,7 @@ function total() {
 			divDinheiro.append('<button class="btn btn-warning btn-sm btn-outline-dark" type="button" onclick="javascript:nota(' + nota + ');">' + nota + '</button>');
 			contNotas++;
 		}
-		if (contNotas >= 4) {
+		if (contNotas >= 5) {
 			break;
 		}
 	}
