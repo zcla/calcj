@@ -129,8 +129,50 @@ function nota(nota) {
 	total();
 }
 
+function notasProvaveis(total) {
+	if (total == 0) {
+		return [];
+	}
+	const NOTAS_EXISTENTES = [.01, .05, .1, .25, .5, 1, 2, 5, 10, 20, 50, 100];
+
+	// Pagamentos com uma nota só
+	const umaNota = [];
+	for (const nota of NOTAS_EXISTENTES) {
+		if (nota >= total) {
+			umaNota.push(nota);
+		}
+	}
+
+	// Pagamentos com duas notas
+	const duasNotas = [...umaNota];
+	for (const nota1 of NOTAS_EXISTENTES) {
+		if (nota1 < total) {
+			for (const nota2 of NOTAS_EXISTENTES) {
+				if (nota2 <= nota1) {
+					if ((nota1 + nota2 >= total)) {
+						if (!duasNotas.includes(nota1 + nota2)) {
+							duasNotas.push(nota1 + nota2);
+						}
+					}
+				}
+			}
+		}
+	}
+
+	// Valores maiores que a maior nota
+	const result = [...duasNotas];
+	if (result.length == 0) {
+		const maiorNota = NOTAS_EXISTENTES[NOTAS_EXISTENTES.length - 1];
+		const segundaMaiorNota = NOTAS_EXISTENTES[NOTAS_EXISTENTES.length - 2];
+		if (total % maiorNota <= segundaMaiorNota) {
+			result.push(Math.trunc(total / maiorNota) * maiorNota + segundaMaiorNota);
+		}
+		result.push((Math.trunc(total / maiorNota) + 1) * maiorNota);
+	}
+	return result.sort(function(a, b) { return a - b; }).slice(0, 5);
+}
+
 function total() {
-	const DINHEIRO_NOTAS = [ 10, 20, 30, 40, 50, 60, 70, 100, 110, 120, 150, 200 ];
 	let dinheiro = 0;
 	if ($('#dinheiro').val() > 0) {
 		dinheiro = $('#dinheiro').val();
@@ -167,23 +209,8 @@ function total() {
 	divDinheiro
 			.append($('<span class="input-group-text" id="basic-addon1" style="border-radius: 0;">')
 					.append('Dinheiro'));
-	let contNotas = 0;
-	for (let i = 0; i < DINHEIRO_NOTAS.length; i++) {
-		const nota = DINHEIRO_NOTAS[i];
-		if (nota >= total) {
-			divDinheiro.append('<button class="btn btn-warning btn-sm btn-outline-dark" type="button" onclick="javascript:nota(' + nota + ');">' + nota + '</button>');
-			contNotas++;
-		}
-		if (contNotas >= 5) {
-			break;
-		}
-	}
-	if (contNotas == 0) {
-		if (total % 100 <= 50) {
-			let nota = Math.trunc(total / 100) * 100 + 50;
-			divDinheiro.append('<button class="btn btn-warning btn-sm btn-outline-dark" type="button" onclick="javascript:nota(' + nota + ');">' + nota + '</button>');
-		}
-		let nota = (Math.trunc(total / 100) + 1) * 100;
+	const notas = notasProvaveis(total);
+	for (const nota of notas) {
 		divDinheiro.append('<button class="btn btn-warning btn-sm btn-outline-dark" type="button" onclick="javascript:nota(' + nota + ');">' + nota + '</button>');
 	}
 	divDinheiro
