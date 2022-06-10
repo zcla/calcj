@@ -25,3 +25,7 @@ input[type="number"] {
 	padding-left: 8pt;
 	padding-right: 8pt;
 }
+
+footer {
+	font-size: 10pt;
+}
