@@ -45,6 +45,7 @@ const dados = {
 		{ "DIVERSOS": 0 },
 		{ "Argola": 8.00 },
 		{ "Cadeia": 5.00 },
+		{ "Cama elástica": 8.00 },
 		{ "Correio elegante": 5.00 },
 		{ "Embalagem": 2.00 },
 		{ "Pescaria": 8.00 },
