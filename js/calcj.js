@@ -215,7 +215,7 @@ function total() {
 		divDinheiro.append('<button class="btn btn-warning btn-sm btn-outline-dark" type="button" onclick="javascript:nota(' + nota + ');">' + nota + '</button>');
 	}
 	divDinheiro
-			.append($('<input type="number" min="0" step="10" class="form-control" id="dinheiro" value="' + dinheiro + '" style="border-radius: 0;">'));
+			.append($('<input type="number" min="0" step="10" class="form-control" id="dinheiro" value="' + dinheiro + '" style="border-radius: 0;" onchange="javascript:total();">'));
 
 	if (dinheiro > 0) {
 		troco = dinheiro - total;
