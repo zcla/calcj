@@ -20,7 +20,7 @@ const dados = {
 		{ "Algodão-doce": 6.00 },
 		{ "Arroz carreteiro": 20.00 },
 		{ "Batata frita pequena": 10.00 },
-		{ "Batata frita grande": 13.00 },
+		{ "Batata frita grande": 15.00 },
 		{ "Biscoitos amanteigados (saquinho)": 4.00 },
 		{ "Bobó de camarão": 22.00 },
 		{ "Bobó vegano (vegetariano)": 16.00 },
