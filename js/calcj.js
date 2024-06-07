@@ -43,7 +43,7 @@ const dados = {
 		{ "Tapioca recheada": 12.00 },
 		{ "Tapioca simples": 6.00 },
 		{ "Maçã do amor": 10.00 },
-		{ "Uva/morango com chocolate": 15.00 },
+		{ "Uva e morango com chocolate": 15.00 },
 		{ "DIVERSOS": 0 },
 		{ "Argola": 12.00 },
 		{ "Cadeia": 5.00 },
